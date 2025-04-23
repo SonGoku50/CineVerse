@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/cinema.jpg' %}">
+  <title>Kommentar erstellen</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: #fff;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: #1e1e1e;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(255, 204, 0, 0.2);
+      text-align: center;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-size: 30px;
+      color: #ffcc00;
+      text-shadow: 0 0 8px rgba(255, 204, 0, 0.8);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 12px 0;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: #292929;
+      color: #fff;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    form input:focus, form textarea:focus {
+      outline: none;
+      border-color: #ffcc00;
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    }
+
+    .button {
+      background: linear-gradient(45deg, #ffcc00, #ffaa00);
+      color: #000;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s;
+      margin-top: 15px;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+    }
+
+    .button:hover {
+      background: linear-gradient(45deg, #ffaa00, #ff8800);
+      box-shadow: 0 0 18px rgba(255, 204, 0, 0.7);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      font-size: 16px;
+      color: #ffcc00;
+      transition: 0.3s;
+    }
+
+    .back-link:hover {
+      color: #ffaa00;
+      text-shadow: 0 0 6px rgba(255, 204, 0, 0.8);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>💬 Kommentar verfassen</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button">Kommentar abschicken</button>
+  </form>
+  <a href="{% url 'home' %}" class="back-link">⬅️ Zurück zur Startseite</a>
+</div>
+
+</body>
+</html>
+

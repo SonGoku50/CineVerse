@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/cinema.jpg' %}">
+  <title>CineVerse - Startseite</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Intro Animation */
+    #intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      animation: fadeOut 2s ease 4s forwards;
+    }
+
+    #intro h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 70px;
+      color: #ffcc00;
+      text-shadow: 0 0 30px #ffaa00;
+      animation: zoomIn 2s ease;
+      margin-bottom: 20px;
+    }
+
+    #intro img {
+      width: 180px;
+      margin-bottom: 20px;
+    }
+
+    @keyframes zoomIn {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .header-buttons a {
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 10px 15px;
+      border-radius: 50px; /* Runde Buttons (pillenförmig) */
+      margin-left: 12px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .header-buttons a:hover {
+      background: rgba(255, 204, 0, 0.2);
+      color: #ffcc00;
+      transform: translateY(-2px); /* Leichter Hover-Effekt */
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    }
+
+    .search-form input {
+      padding: 10px;
+      width: 250px;
+      border-radius: 50px; /* Runde Ecken für das Suchfeld */
+      border: none;
+      background: #333;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .search-form input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+    }
+
+    .search-form button {
+      padding: 10px 14px;
+      margin-left: 5px;
+      background: #ffcc00;
+      border: none;
+      color: #000;
+      border-radius: 50px; /* Runder Button (pillenförmig) */
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .search-form button:hover {
+      background: #ffaa00;
+      transform: translateY(-2px); /* Leichter Hover-Effekt */
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    }
+
+    .profile-icon {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffcc00;
+      transition: all 0.3s ease;
+    }
+
+    .profile-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px #ffcc00;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 150px;
+      background: url('/static/images/banner.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 60px;
+      color: #ffcc00;
+      text-shadow: 0 0 20px #ffcc00;
+      margin: 0;
+    }
+
+    /* Container */
+    .container {
+      padding: 50px 5%;
+      text-align: center;
+    }
+
+    .container h2 {
+      font-size: 38px;
+      color: #ffcc00;
+      margin-bottom: 30px;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px #ffcc00;
+    }
+
+    /* Film Grid */
+    .film-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+    }
+
+    .film-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(255, 204, 0, 0.05);
+    }
+
+    .film-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
+    }
+
+    .film-card img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+    }
+
+    .film-card .content {
+      padding: 18px;
+    }
+
+    .film-card h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .film-card a {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 18px;
+      background: rgba(255, 204, 0, 0.15);
+      color: #ffcc00;
+      border-radius: 50px; /* Runder Button (pillenförmig) */
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .film-card a:hover {
+      background: rgba(255, 204, 0, 0.3);
+      color: #fff;
+      transform: translateY(-2px); /* Leichter Hover-Effekt */
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    }
+
+    /* Center Carousel */
+    .center-carousel-wrapper {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .center-carousel {
+      display: flex;
+      transition: transform 0.5s ease;
+      gap: 30px;
+    }
+
+    .center-carousel-item {
+      flex: 0 0 60%;
+      max-width: 60%;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .center-carousel-item img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .carousel-arrows {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 20px;
+    }
+
+    .carousel-arrows button {
+      background: #ffcc00;
+      border: none;
+      padding: 12px 18px;
+      font-size: 28px;
+      border-radius: 50%; /* Komplett runde Buttons */
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .carousel-arrows button:hover {
+      background: #ffaa00;
+      transform: scale(1.1); /* Leichter Hover-Effekt */
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+<!-- Intro Animation -->
+<div id="intro">
+  <img src="{% static 'images/cinema.jpg' %}" alt="Logo">
+  <h1>CineVerse</h1>
+  <audio id="introSound" autoplay>
+    <source src="{% static 'audio/intro.mp3' %}" type="audio/mpeg">
+  </audio>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="search-form">
+    <form action="{% url 'search' %}" method="get">
+      <input type="text" name="q" placeholder="Film suchen...">
+      <button type="submit">Suchen</button>
+    </form>
+  </div>
+
+  <div class="header-buttons">
+    <a href="{% url 'movie' %}">Filme schauen</a>
+    <a href="{% url 'kinokarte' %}">📍 Kino finden</a>
+    <a href="{% url 'favoriten_liste' %}">⭐ Favoriten</a>
+    {% now "Y" as current_year %}
+    {% now "m" as current_month %}
+    <a href="{% url 'kalender' current_year current_month %}">Kalender</a>
+    <a href="{% url 'profil' %}">
+      <img src="{{ user.userprofile.image.url|default_if_none:'/static/images/default_avatar.png' }}" alt="Profilbild" class="profile-icon">
+    </a>
+  </div>
+</div>
+
+<!-- Center Carousel -->
+<div class="center-carousel-wrapper">
+  <div class="center-carousel">
+    {% for film in filme %}
+    <div class="center-carousel-item">
+      <a href="{% url 'film_details' film.id %}">
+        <img src="{{ film.image.url }}" alt="{{ film.title }}">
+        <div class="caption">
+          <h5>{{ film.title }}</h5>
+          <p>Ab {{ film.release_date }}</p>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="carousel-arrows">
+    <button id="prevBtn">‹</button>
+    <button id="nextBtn">›</button>
+  </div>
+</div>
+
+<!-- Film Cards -->
+<div class="hero">
+  <h1>Kino 2025</h1>
+</div>
+
+<div class="container">
+  <h2>Bald im Kino</h2>
+  <div class="film-grid">
+    {% for film in filme %}
+    <div class="film-card">
+      <img src="{{ film.image.url }}" alt="{{ film.title }}">
+      <div class="content">
+        <h3>{{ film.title }}</h3>
+        <a href="{% url 'film_details' film.id %}">Details ansehen</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  const introSound = document.getElementById('introSound');
+  introSound.onended = () => {
+    document.getElementById('intro').style.display = 'none';
+  };
+
+  const carousel = document.querySelector('.center-carousel');
+  const items = document.querySelectorAll('.center-carousel-item');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+
+  let currentIndex = 0;
+
+  function updateCarousel() {
+    const itemWidth = items[0].clientWidth + 30; // 30 = gap
+    const offset = (itemWidth * currentIndex);
+    carousel.style.transform = `translateX(calc(50% - ${offset + itemWidth/2}px))`;
+  }
+
+  nextBtn.addEventListener('click', () => {
+    slideNext();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    slidePrev();
+  });
+
+  function slideNext() {
+    if (currentIndex < items.length - 1) {
+      currentIndex++;
+    } else {
+      currentIndex = 0;
+    }
+    updateCarousel();
+  }
+
+  function slidePrev() {
+    if (currentIndex > 0) {
+      currentIndex--;
+    } else {
+      currentIndex = items.length - 1;
+    }
+    updateCarousel();
+  }
+
+  // Initiale Position setzen
+  updateCarousel();
+
+  // Automatischer Slide
+  setInterval(() => {
+    slideNext();
+  }, 4000);
+</script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kino-Karte weltweit - CineVerse</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #121212, #1f1f1f);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+      background-attachment: fixed;
+    }
+
+    /* Subtile Hintergrundanimation */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(212, 160, 23, 0.1) 0%, transparent 70%); /* Dunkles Gold für den Hintergrund */
+      animation: pulse 10s infinite ease-in-out;
+      z-index: -1;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 0.3; }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 8px 20px rgba(212, 160, 23, 0.2); /* Dunkles Gold für Schatten */
+      border-bottom: 1px solid rgba(212, 160, 23, 0.3);
+    }
+
+    .nav-buttons a {
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(45deg, #d4a017, #b58900); /* Dunkles Gold und Orange */
+      padding: 12px 20px;
+      border-radius: 50px;
+      margin-left: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-buttons a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+      color: #000;
+    }
+
+
+
+    /* Title */
+    h1 {
+      text-align: center;
+      margin: 40px 0;
+      font-size: 3.2rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #d4a017; /* Dunkles Gold */
+      text-shadow: 0 0 30px #d4a017, 0 0 50px #b58900; /* Dunklere Schatten */
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 30px #d4a017, 0 0 50px #b58900; }
+      100% { text-shadow: 0 0 40px #d4a017, 0 0 70px #b58900; }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Map Container */
+    .map-container {
+      position: relative;
+      width: 95%;
+      margin: 0 auto;
+      height: 75vh;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(212, 160, 23, 0.3);
+      animation: mapGlow 3s infinite alternate;
+      transform: perspective(1000px) rotateX(2deg);
+      transition: transform 0.5s ease;
+    }
+
+    .map-container:hover {
+      transform: perspective(1000px) rotateX(0deg);
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      border-radius: 20px;
+    }
+
+    @keyframes mapGlow {
+      0% { box-shadow: 0 10px 40px rgba(212, 160, 23, 0.3); }
+      100% { box-shadow: 0 15px 60px rgba(212, 160, 23, 0.5); }
+    }
+
+    /* Search and Filter Bar */
+    .search-filter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 30px auto;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 50px;
+      width: 90%;
+      max-width: 700px;
+      box-shadow: 0 5px 20px rgba(212, 160, 23, 0.2);
+      animation: fadeInUp 1s ease;
+    }
+
+    .search-filter input {
+      padding: 12px 20px;
+      width: 350px;
+      border-radius: 50px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-filter input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 15px rgba(212, 160, 23, 0.4);
+    }
+
+    .search-filter button {
+      padding: 12px 25px;
+      background: linear-gradient(45deg, #d4a017, #b58900); /* Dunkles Gold und Orange */
+      border: none;
+      color: #000;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+    }
+
+    .search-filter button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+    }
+
+    /* Kino Sidebar */
+    .kino-sidebar {
+      position: fixed;
+      top: 150px;
+      left: 20px;
+      width: 300px;
+      max-height: 70vh;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 999;
+      box-shadow: 0 5px 30px rgba(212, 160, 23, 0.2);
+      animation: slideIn 1s ease;
+      display: none; /* Wird per JS ein-/ausgeblendet */
+    }
+
+    .kino-sidebar.active {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      0% { transform: translateX(-100%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    .kino-sidebar h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: #d4a017; /* Dunkles Gold */
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #d4a017;
+    }
+
+    .kino-list-item {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .kino-list-item:hover {
+      background: rgba(212, 160, 23, 0.2); /* Dunkles Gold */
+      transform: translateX(5px);
+    }
+
+    .kino-list-item span {
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .kino-list-item .city {
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+
+    /* Toggle Sidebar Button */
+    .toggle-sidebar {
+      position: fixed;
+      top: 120px;
+      left: 20px;
+      padding: 10px 15px;
+      background: linear-gradient(45deg, #d4a017, #b58900); /* Dunkles Gold und Orange */
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .toggle-sidebar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+    }
+
+    /* Custom Marker Icon */
+    .custom-marker-icon {
+      width: 40px;
+      height: 40px;
+      background: url('{% static "images/cinema_marker.png" %}') no-repeat center;
+      background-size: contain;
+    }
+
+    /* Marker Label */
+    .marker-label {
+      background: rgba(0, 0, 0, 0.8);
+      color: #d4a017; /* Dunkles Gold */
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      white-space: nowrap;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 10px rgba(212, 160, 23, 0.2);
+    }
+
+    /* Popup Styling */
+    .leaflet-popup-content-wrapper {
+      background: rgba(0, 0, 0, 0.95);
+      color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(212, 160, 23, 0.3);
+    }
+
+    .leaflet-popup-content {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .leaflet-popup-content h3 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+      color: #d4a017; /* Dunkles Gold */
+      text-shadow: 0 0 10px #d4a017;
+    }
+
+    .leaflet-popup-content p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    .leaflet-popup-content a {
+      display: inline-block;
+      margin: 5px 0;
+      padding: 8px 15px;
+      background: linear-gradient(45deg, #d4a017, #b58900); /* Dunkles Gold und Orange */
+      color: #000;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .leaflet-popup-content a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+    }
+
+    .leaflet-popup-tip {
+      background: rgba(0, 0, 0, 0.95);
+    }
+
+    /* Theme Switcher */
+    .theme-switcher {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      background: linear-gradient(45deg, #d4a017, #b58900); /* Dunkles Gold und Orange */
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .theme-switcher:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+  <div class="nav-buttons">
+    <a href="{% url 'home' %}">🏠 Startseite</a>
+    {% now "Y" as current_year %}
+    {% now "m" as current_month %}
+    <a href="{% url 'kalender' current_year current_month %}">Kalender</a>
+    <a href="{% url 'movie' %}">🎥 Filme</a>
+    <a href="{% url 'favoriten_liste' %}">⭐ Favoriten</a>
+    <a href="{% url 'profil' %}">Profil</a>
+  </div>
+</div>
+
+<!-- Title -->
+<h1>Finde dein Kino weltweit</h1>
+
+<!-- Toggle Sidebar Button -->
+<button class="toggle-sidebar" onclick="toggleSidebar()">Kinos anzeigen</button>
+
+<!-- Kino Sidebar -->
+<div class="kino-sidebar" id="kinoSidebar">
+  <h3>Kino-Liste</h3>
+  <div id="kinoList"></div>
+</div>
+
+<!-- Search and Filter -->
+<div class="search-filter">
+  <input type="text" id="kino-search" placeholder="Suche nach Kino, Stadt oder Land...">
+  <button onclick="searchKinos()">Suchen</button>
+</div>
+
+<!-- Map -->
+<div class="map-container">
+  <div id="map"></div>
+</div>
+
+<!-- Theme Switcher -->
+<button class="theme-switcher" onclick="toggleMapTheme()">Map-Theme wechseln</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<script>
+// Initialisiere die Karte
+let map = L.map('map').setView([51.1657, 10.4515], 5); // Mittelpunkt Deutschland
+
+// Standard-Theme (Dunkel)
+let currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 18,
+  attribution: '© CartoDB | © OpenStreetMap',
+}).addTo(map);
+
+// Benutzerdefinierte Marker-Icons
+const cinemaIcon = L.divIcon({
+  className: 'custom-marker-icon',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40],
+});
+
+// Kino-Daten (erweitert mit mehr Details)
+const kinos = [
+  { name: "CineStar Berlin", lat: 52.5200, lng: 13.4050, city: "Berlin", country: "Deutschland", website: "https://www.cinestar.de/kino-berlin" },
+  { name: "Cineplex Leipzig", lat: 51.3397, lng: 12.3731, city: "Leipzig", country: "Deutschland", website: "https://www.cineplex.de/leipzig" },
+  { name: "Apollo Ulm", lat: 48.4011, lng: 9.9876, city: "Ulm", country: "Deutschland", website: "https://www.apollokinos.de" },
+  { name: "UCI Bochum", lat: 51.4818, lng: 7.2162, city: "Bochum", country: "Deutschland", website: "https://www.uci-kinowelt.de" },
+  { name: "CineStar Erfurt", lat: 50.9770, lng: 11.0328, city: "Erfurt", country: "Deutschland", website: "https://www.cinestar.de/kino-erfurt" },
+  { name: "Gloria Stuttgart", lat: 48.7758, lng: 9.1829, city: "Stuttgart", country: "Deutschland", website: "https://www.gloria-stuttgart.de" },
+  { name: "Arsenal Berlin", lat: 52.5016, lng: 13.3885, city: "Berlin", country: "Deutschland", website: "https://www.arsenal-berlin.de" },
+  { name: "Scala Ludwigsburg", lat: 48.8950, lng: 9.1916, city: "Ludwigsburg", country: "Deutschland", website: "https://www.scala-ludwigsburg.de" },
+  { name: "Atlantis Mannheim", lat: 49.4875, lng: 8.4660, city: "Mannheim", country: "Deutschland", website: "https://www.atlantis-mannheim.de" },
+  { name: "Capitol Mainz", lat: 49.9929, lng: 8.2473, city: "Mainz", country: "Deutschland", website: "https://www.capitol-mainz.de" },
+  { name: "Broadway Trier", lat: 49.7499, lng: 6.6371, city: "Trier", country: "Deutschland", website: "https://www.broadway-trier.de" },
+  { name: "Cinema Center Bremen", lat: 53.0793, lng: 8.8017, city: "Bremen", country: "Deutschland", website: "https://www.cinemacenter-bremen.de" },
+  { name: "CinemaxX Hamburg", lat: 53.5511, lng: 9.9937, city: "Hamburg", country: "Deutschland", website: "https://www.cinemaxx.de" },
+  { name: "Cineplex München", lat: 48.1351, lng: 11.5820, city: "München", country: "Deutschland", website: "https://www.cineplex.de/muenchen" },
+  { name: "CinemaxX Bielefeld", lat: 52.0295, lng: 8.5310, city: "Bielefeld", country: "Deutschland", website: "https://www.cinemaxx.de" },
+  { name: "CinemaxX Augsburg", lat: 48.3653, lng: 10.9061, city: "Augsburg", country: "Deutschland", website: "https://www.cinemaxx.de" },
+  { name: "CinemaxX Dresden", lat: 51.0517, lng: 13.8048, city: "Dresden", country: "Deutschland", website: "https://www.cinemaxx.de" },
+  { name: "CinemaxX Essen", lat: 51.4582, lng: 7.0037, city: "Essen", country: "Deutschland", website: "https://www.cinemaxx.de" },
+  { name: "CinemaxX Freiburg", lat: 47.9956, lng: 7.8440, city: "Freiburg", country: "Deutschland", website: "https://www.cinemaxx.de" },
+  { name: "UCI Düsseldorf", lat: 51.2277, lng: 6.7735, city: "Düsseldorf", country: "Deutschland", website: "https://www.uci-kinowelt.de" },
+  { name: "Cineworld Nürnberg", lat: 49.4521, lng: 11.0767, city: "Nürnberg", country: "Deutschland", website: "https://www.cineworld-nuernberg.de" },
+  { name: "Kinopolis Bonn", lat: 50.7374, lng: 7.0982, city: "Bonn", country: "Deutschland", website: "https://www.kinopolis.de" },
+  { name: "Cinecitta Nürnberg", lat: 49.4520, lng: 11.0765, city: "Nürnberg", country: "Deutschland", website: "https://www.cinecitta.de" },
+  // Weltweit
+  { name: "AMC Empire 25 NYC", lat: 40.7561, lng: -73.9886, city: "New York", country: "USA", website: "https://www.amctheatres.com" },
+  { name: "Vue London", lat: 51.5074, lng: -0.1278, city: "London", country: "Großbritannien", website: "https://www.myvue.com" },
+  { name: "Pathé Paris", lat: 48.8566, lng: 2.3522, city: "Paris", country: "Frankreich", website: "https://www.pathe.fr" },
+  { name: "TOHO Shinjuku Tokyo", lat: 35.6938, lng: 139.7034, city: "Tokyo", country: "Japan", website: "https://www.tohotheater.jp" },
+  { name: "Hoyts Melbourne", lat: -37.8136, lng: 144.9631, city: "Melbourne", country: "Australien", website: "https://www.hoyts.com.au" },
+  { name: "CineStar Zagreb", lat: 45.8150, lng: 15.9819, city: "Zagreb", country: "Kroatien", website: "https://www.cinestarzagreb.hr" },
+  { name: "Cinema City Prag", lat: 50.0755, lng: 14.4378, city: "Prag", country: "Tschechien", website: "https://www.cinemacity.cz" },
+];
+
+// Marker-Cluster-Gruppe erstellen
+const markers = L.markerClusterGroup({
+  iconCreateFunction: function(cluster) {
+    return L.divIcon({
+      html: `<div style="background: #d4a017; color: #000; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-weight: bold;">${cluster.getChildCount()}</div>`, /* Dunkles Gold */
+      className: '',
+      iconSize: [40, 40],
+    });
+  }
+});
+
+// Kinos zur Karte hinzufügen
+const kinoMarkers = [];
+kinos.forEach(kino => {
+  const marker = L.marker([kino.lat, kino.lng], { icon: cinemaIcon });
+  
+  // Label direkt über dem Marker
+  marker.bindTooltip(`<div class="marker-label">${kino.name}</div>`, {
+    permanent: true,
+    direction: 'top',
+    offset: [0, -10],
+    opacity: 0.9,
+  });
+
+  marker.bindPopup(`
+    <h3>${kino.name}</h3>
+    <p><strong>Stadt:</strong> ${kino.city}</p>
+    <p><strong>Land:</strong> ${kino.country}</p>
+    <p><a href="${kino.website}" target="_blank">Website besuchen</a></p>
+    <p><a href="https://www.google.com/maps/dir/?api=1&destination=${kino.lat},${kino.lng}" target="_blank">Route berechnen</a></p>
+  `);
+  markers.addLayer(marker);
+  kinoMarkers.push(marker);
+
+  // Kino-Daten für die Suche speichern
+  marker.kinoData = kino;
+});
+
+map.addLayer(markers);
+
+// Kino-Liste in die Sidebar einfügen
+const kinoList = document.getElementById('kinoList');
+kinos.forEach((kino, index) => {
+  const listItem = document.createElement('div');
+  listItem.className = 'kino-list-item';
+  listItem.innerHTML = `
+    <span>${kino.name}</span><br>
+    <span class="city">${kino.city}, ${kino.country}</span>
+  `;
+  listItem.addEventListener('click', () => {
+    map.setView([kino.lat, kino.lng], 14);
+    kinoMarkers[index].openPopup();
+  });
+  kinoList.appendChild(listItem);
+});
+
+// Eigener Standort
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(position => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const userMarker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="background: #00ff00; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff;"></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+        popupAnchor: [0, -10],
+      })
+   
+    }).addTo(map)
+      .bindPopup("Dein Standort").openPopup();
+    map.setView([lat, lon], 10);
+  }, () => {
+    console.log("Geolocation not available or denied.");
+  });
+}
+
+// Suchfunktion
+function searchKinos() {
+  const searchInput = document.getElementById('kino-search').value.toLowerCase();
+  markers.eachLayer(marker => {
+    const kino = marker.kinoData;
+    const matchesSearch = kino.name.toLowerCase().includes(searchInput) ||
+                         kino.city.toLowerCase().includes(searchInput) ||
+                         kino.country.toLowerCase().includes(searchInput);
+    if (matchesSearch) {
+      marker.addTo(map);
+      map.setView([kino.lat, kino.lng], 14);
+      marker.openPopup();
+    }
+  });
+}
+
+// Suche bei Enter-Taste auslösen
+document.getElementById('kino-search').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    searchKinos();
+  }
+});
+
+// Sidebar ein-/ausblenden
+function toggleSidebar() {
+  const sidebar = document.getElementById('kinoSidebar');
+  sidebar.classList.toggle('active');
+}
+
+// Map-Theme wechseln
+let isDarkTheme = true;
+function toggleMapTheme() {
+  isDarkTheme = !isDarkTheme;
+  currentTileLayer.remove();
+  if (isDarkTheme) {
+    currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 18,
+      attribution: '© CartoDB | © OpenStreetMap',
+    });
+  } else {
+    currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap',
+    });
+  }
+  currentTileLayer.addTo(map);
+}
+</script>
+</body>
+</html>

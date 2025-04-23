@@ -1,0 +1,399 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/cinema.jpg' %}">
+    <title>⭐ Meine Favoriten</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000000; /* Hintergrund auf Schwarz geändert */
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dark Mode Toggle */
+        body.light-mode {
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+        }
+
+        body.light-mode .container {
+            background: linear-gradient(145deg, #ffffff, #e0e0e0);
+        }
+
+        body.light-mode .film {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, #ff00ff, #aa00aa);
+            border: none;
+            border-radius: 50px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(212, 160, 23, 0.2);
+            border-bottom: 1px solid rgba(212, 160, 23, 0.3);
+        }
+
+        .nav-buttons a {
+            text-decoration: none;
+            color: #000;
+            background: linear-gradient(45deg, #d4a017, #b58900);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-buttons a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 50px auto;
+            padding: 40px;
+            background: linear-gradient(145deg, #1c1c1c, #262626);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(212, 160, 23, 0.2);
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            margin-bottom: 40px;
+        }
+
+        /* Film List */
+        .film-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .film {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(212, 160, 23, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            transform: rotateY(0deg);
+            transform-style: preserve-3d;
+            backdrop-filter: blur(10px);
+            animation: zoomIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9) rotateY(10deg); }
+            to { opacity: 1; transform: scale(1) rotateY(0deg); }
+        }
+
+        .film:hover {
+            transform: rotateY(5deg) scale(1.05);
+            box-shadow: 0 15px 40px rgba(212, 160, 23, 0.4);
+        }
+
+        .film h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #d4a017;
+            text-shadow: 0 0 10px #d4a017;
+        }
+
+        .film img {
+            width: 100%;
+            height: 340px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+            loading: lazy; /* Lazy Loading */
+        }
+
+        .film:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.5);
+        }
+
+        /* Buttons */
+        .button, .film form button, .share-button {
+            background: linear-gradient(45deg, #d4a017, #b58900);
+            color: #000;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: -TOF600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 5px;
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+        }
+
+        .button:hover, .film form button:hover, .share-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 160, 23, 0.5);
+        }
+
+        .share-button {
+            background: linear-gradient(45deg, #ff00ff, #aa00aa);
+            margin-top: 20px;
+        }
+
+        .film form {
+            display: inline-block;
+        }
+
+        /* Remove Animation */
+        .film.remove {
+            animation: removeFilm 0.5s ease forwards;
+        }
+
+        @keyframes removeFilm {
+            0% { opacity: 1; transform: scale(1) rotateY(0deg); }
+            50% { opacity: 0.5; transform: scale(0.8) rotateY(20deg); }
+            100% { opacity: 0; transform: scale(0) rotateY(40deg); display: none; }
+        }
+
+        /* Empty Message */
+        p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Zurück Button */
+        .zurueck-button {
+            display: inline-block;
+            margin-top: 40px;
+            font-size: 1rem;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #ff00ff, #aa00aa);
+            color: #000;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.5s;
+            box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+        }
+
+        .zurueck-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Film Modal */
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(212, 160, 23, 0.3);
+            border: none;
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #00f7ff;
+            text-shadow: 0 0 10px #00f7ff;
+        }
+
+        .modal-body {
+            color: #ccc;
+        }
+
+        .modal-body img {
+            width: 100%;
+            max-width: 200px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        .modal-footer .btn {
+            background: linear-gradient(45deg, #ff00ff, #aa00aa);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-footer .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Responsivität */
+        @media (max-width: 1024px) {
+            .film-list {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 30px 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .film-list {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+
+            .film img {
+                height: 280px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .film-list {
+                grid-template-columns: 1fr;
+            }
+
+            .film img {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+    <div class="nav-buttons">
+        <a href="{% url 'home' %}">🏠 Startseite</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1><i class="bi bi-star-fill me-2"></i> Meine Favoriten</h1>
+
+    {% if filme %}
+        <div class="film-list" id="filmList">
+            {% for film in filme %}
+                <div class="film" data-film='{"title": "{{ film.title }}", "image": "{{ film.image.url|default:'https://via.placeholder.com/250x340' }}", "description": "{{ film.description|default:'Keine Beschreibung verfügbar.' }}"}'>
+                    <h2>{{ film.title }}</h2>
+                    <img src="{{ film.image.url|default:'https://via.placeholder.com/250x340' }}" alt="{{ film.title }}" data-bs-toggle="modal" data-bs-target="#filmModal">
+                    <a href="{% url 'film_details' film.id %}" class="button"><i class="bi bi-film me-1"></i> Details ansehen</a>
+                    <form action="{% url 'favorisieren' film.id %}" method="post" class="remove-form">
+                        {% csrf_token %}
+                        <button type="submit" class="remove-btn"><i class="bi bi-star-fill me-1"></i> Entfernen</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Du hast noch keine Favoriten hinzugefügt.</p>
+    {% endif %}
+</div>
+
+<!-- Film Modal -->
+<div class="modal fade" id="filmModal" tabindex="-1" aria-labelledby="filmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filmModalLabel"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="filmImage" src="" alt="">
+                <p id="filmDescription"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-bs-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Film-Details im Modal anzeigen
+document.querySelectorAll('.film img').forEach(img => {
+    img.addEventListener('click', (e) => {
+        const filmData = JSON.parse(e.target.parentElement.dataset.film);
+        document.getElementById('filmModalLabel').textContent = filmData.title;
+        document.getElementById('filmImage').src = filmData.image;
+        document.getElementById('filmDescription').textContent = filmData.description;
+    });
+});
+
+// Remove Animation
+document.querySelectorAll('.remove-form').forEach(form => {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const filmDiv = form.parentElement;
+        filmDiv.classList.add('remove');
+        setTimeout(() => {
+            form.submit();
+        }, 500);
+    });
+});
+</script>
+</body>
+</html>

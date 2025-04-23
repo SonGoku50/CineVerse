@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Filme schauen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      color: #fff;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: #1c1c1c;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-left {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .header a {
+      text-decoration: none;
+      color: #000;
+      background: #ffcc00;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      background: #333;
+      border-radius: 50px;
+      padding: 5px 10px;
+    }
+
+    .search-form input[type="text"] {
+      border: none;
+      background: transparent;
+      color: #fff;
+      padding: 8px 12px;
+      outline: none;
+      font-size: 16px;
+      width: 200px;
+    }
+
+    .search-form button {
+      background: #ffcc00;
+      border: none;
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 36px;
+      color: #ffcc00;
+      margin: 50px 0 20px;
+      text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+    }
+
+    /* Karussell */
+    .carousel {
+      max-width: 1200px;
+      margin: 20px auto 10px;
+      overflow: hidden;
+      position: relative;
+      height: 380px;
+      border-radius: 12px;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.8s ease;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 30px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px 20px;
+      border-radius: 8px;
+      max-width: 90%;
+    }
+
+    .carousel-caption h3 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .carousel-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: #fff;
+      padding: 12px;
+      cursor: pointer;
+      z-index: 10;
+      font-size: 20px;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+
+    .carousel-button:hover {
+      background: rgba(255, 204, 0, 0.9);
+      color: #000;
+    }
+
+    .carousel-button.prev { left: 20px; }
+    .carousel-button.next { right: 20px; }
+
+    .progress-bar {
+      height: 6px;
+      background: #333;
+      width: 100%;
+      margin: 0 auto 30px;
+      border-radius: 4px;
+      overflow: hidden;
+      max-width: 1200px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #ffcc00;
+      width: 0;
+      transition: width 0.5s ease;
+    }
+
+    /* Film Grid */
+    .film-grid-container {
+      padding: 40px 20px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .film-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      justify-content: center;
+    }
+
+    .film {
+      background: #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 250px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .film:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
+    }
+
+    .film img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+    }
+
+    .film-info {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .film-info h2 {
+      font-size: 20px;
+      color: #ffcc00;
+      margin: 10px 0;
+    }
+
+    .film-info a {
+      text-decoration: none;
+      background: #ffcc00;
+      color: #000;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+
+    .film-info a:hover {
+      background: #ffaa00;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="{% url 'home' %}">🏠 Startseite</a>
+  </div>
+  <form class="search-form" method="GET" action="{% url 'search2' %}">
+    <input type="text" name="a" placeholder="Film suchen..." value="{{ request.GET.q }}">
+    <button type="submit">Suchen</button>
+  </form>
+</div>
+
+<h1 class="section-title">🎥 Neues aus dem Kino</h1>
+
+<div class="carousel">
+  <div class="carousel-track">
+    {% for movie in neue_filme %}
+      <div class="carousel-slide">
+        <a href="{% url 'movie_details' movie.id %}">
+          <img src="{{ movie.image.url }}" alt="{{ movie.title }}">
+        </a>
+        <div class="carousel-caption">
+          <h3>{{ movie.title }}</h3>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-button prev">&#10094;</button>
+  <button class="carousel-button next">&#10095;</button>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill"></div>
+</div>
+
+<h1 class="section-title">🎬 Alle Filme</h1>
+
+<div class="film-grid-container">
+  <div class="film-grid">
+    {% for movie in movies %}
+      <div class="film">
+        <img src="{{ movie.image.url }}" alt="{{ movie.title }}">
+        <div class="film-info">
+          <h2>{{ movie.title }}</h2>
+          <a href="{% url 'movie_details' movie.id %}">Anschauen 🎥</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  const track = document.querySelector('.carousel-track');
+  const slides = Array.from(track.children);
+  const prevButton = document.querySelector('.carousel-button.prev');
+  const nextButton = document.querySelector('.carousel-button.next');
+  const progressFill = document.querySelector('.progress-fill');
+  let currentSlide = 0;
+
+  function updateSlidePosition() {
+    const slideWidth = slides[0].getBoundingClientRect().width;
+    track.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+  }
+
+  function updateProgressBar() {
+    const percent = (currentSlide + 1) / slides.length * 100;
+    progressFill.style.width = percent + '%';
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    updateSlidePosition();
+    applyAnimation();
+    updateProgressBar();
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    updateSlidePosition();
+    applyAnimation();
+    updateProgressBar();
+  }
+
+  nextButton.addEventListener('click', nextSlide);
+  prevButton.addEventListener('click', prevSlide);
+  setInterval(nextSlide, 5000);
+
+  function applyAnimation() {
+    slides.forEach((slide, index) => {
+      slide.style.animation = 'none';
+      void slide.offsetWidth;
+      slide.style.animation = `slideIn${index % 2 === 0 ? 'Left' : 'Right'} 0.8s ease forwards`;
+    });
+  }
+
+  applyAnimation();
+  updateProgressBar();
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+
+</body>
+</html>
+
