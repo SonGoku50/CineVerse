@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-)ot8vaivgx&s(gt-2ruaf$hcoo3jdx76@(wx=hew!bmymdwk82
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://cineverse-j6jm.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cineverse-j6jm.onrender.com']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://cineverse-j6jm.onrender.com",
+    "http://localhost:8000"
+]
 
 
 # Application definition
