@@ -80,10 +80,16 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cineverse',
+        'USER': 'cineverse_user',
+        'PASSWORD': 'eqbiUIXsvZYAH69B5y0Dumc55jvccyUL',
+        'HOST': 'dpg-d04fpqi4d50c73a578pg-a.frankfurt-postgres.render.com',
+        'PORT': '5432',
     }
 }
 
