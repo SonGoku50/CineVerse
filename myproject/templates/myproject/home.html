@@ -321,7 +321,7 @@
     {% now "m" as current_month %}
     <a href="{% url 'kalender' current_year current_month %}">Kalender</a>
     <a href="{% url 'profil' %}">
-      <img src="{{ user.userprofile.image.url|default_if_none:'/static/images/default_avatar.png' }}" alt="Profilbild" class="profile-icon">
+      <img src="{{ user.userprofile.image.url|default_if_none:'/static/images/default_avatar.svg' }}" alt="Profilbild" class="profile-icon">
     </a>
   </div>
 </div>
