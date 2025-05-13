@@ -3,13 +3,33 @@
 {% load static %}
 
 {% block login %}
-<div class="main-section">
+<section class="main-section">
     <h1>Anmelden bei CineVerse</h1>
     <div class="login-form-container">
+        {% if form.errors %}
+            <div class="error-message">
+                <p>Fehler: Bitte überprüfe deine Eingaben.</p>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
         <form method="post" class="login-form">
             {% csrf_token %}
             <div class="form-group">
-                {{ form.as_p }}
+                <label for="{{ form.username.id_for_label }}">Benutzername</label>
+                <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" placeholder="Dein Benutzername" required>
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Passwort</label>
+                <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" placeholder="Dein Passwort" required>
             </div>
             <button type="submit" class="form-button">Anmelden</button>
         </form>
@@ -17,20 +37,26 @@
             Noch keinen Account? <a href="{% url 'register' %}">Jetzt registrieren</a>
         </p>
     </div>
-</div>
+</section>
 
 <style>
     /* Login Form Styling */
+    .main-section {
+        max-width: 1000px;
+        margin: 80px auto;
+        padding: 0 20px;
+        text-align: center;
+        animation: fadeIn 1s ease forwards;
+    }
+
     .login-form-container {
-        max-width: 500px;
+        max-width: 450px;
         margin: 0 auto;
-        padding: 40px;
-        background: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.08);
         border-radius: 15px;
-        border: 1px solid #d4af37;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-        opacity: 0;
-        animation: fadeIn 1s ease forwards 0.3s;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 1.2s ease forwards 0.2s;
     }
 
     .login-form {
@@ -42,70 +68,86 @@
     .form-group {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-    }
-
-    .form-group p {
-        margin: 0;
-        color: #ddd;
-        font-size: 16px;
+        gap: 8px;
+        text-align: left;
     }
 
     .form-group label {
-        font-family: 'Playfair Display', serif;
-        color: #d4af37;
-        font-size: 18px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #e6c34c;
     }
 
     .form-group input {
         padding: 12px 15px;
-        background: #111;
-        border: 1px solid #d4af37;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid #e6c34c;
         border-radius: 8px;
         color: #fff;
-        font-size: 16px;
-        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        font-family: 'Poppins', sans-serif;
         transition: all 0.3s ease;
     }
 
     .form-group input:focus {
         outline: none;
         border-color: #fff;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        box-shadow: 0 0 8px rgba(230, 195, 76, 0.4);
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .form-button {
-        background: linear-gradient(45deg, #d4af37, #b8972e);
+        background: #e6c34c;
         border: none;
-        color: #fff;
-        padding: 15px 30px;
-        border-radius: 8px;
-        font-family: 'Playfair Display', serif;
-        font-size: 18px;
+        color: #121212;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-        animation: pulse 2s infinite;
     }
 
     .form-button:hover {
         background: #fff;
-        color: #000;
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        color: #121212;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(230, 195, 76, 0.4);
+    }
+
+    .error-message {
+        background: rgba(255, 75, 75, 0.2);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        color: #ff4b4b;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .error-message ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0;
+    }
+
+    .error-message li {
+        margin-bottom: 5px;
     }
 
     .register-prompt {
         margin-top: 20px;
-        font-size: 16px;
+        font-size: 14px;
         color: #ccc;
         text-align: center;
     }
 
     .register-prompt a {
-        color: #d4af37;
+        color: #e6c34c;
         text-decoration: none;
-        font-family: 'Playfair Display', serif;
+        font-weight: 500;
         transition: all 0.3s ease;
     }
 
@@ -114,19 +156,44 @@
         text-decoration: underline;
     }
 
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
     /* Responsivität */
-    @media (max-width: 576px) {
+    @media (max-width: 768px) {
+        .main-section {
+            margin: 60px auto;
+        }
+
         .login-form-container {
-            padding: 30px 20px;
+            padding: 25px;
+            max-width: 90%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-section h1 {
+            font-size: 28px;
+        }
+
+        .login-form-container {
+            padding: 20px;
         }
 
         .form-button {
-            padding: 12px 25px;
-            font-size: 16px;
+            padding: 10px 25px;
+            font-size: 14px;
+        }
+
+        .form-group label,
+        .form-group input {
+            font-size: 13px;
         }
 
         .register-prompt {
-            font-size: 14px;
+            font-size: 13px;
         }
     }
 </style>
