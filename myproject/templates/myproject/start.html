@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Startseite | CineVerse</title>
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.png' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * {
@@ -16,9 +16,9 @@
         }
 
         body {
-            background: #1a1a1a url('{% static "images/cinema-bg.jpg" %}') no-repeat center/cover fixed;
+            background: #121212 url('{% static "images/cinema-bg.jpg" %}') no-repeat center/cover fixed;
             color: #fff;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
             position: relative;
         }
@@ -30,219 +30,223 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7));
             z-index: -1;
         }
 
         /* Header */
         header {
-            background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
-            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #d4af37;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
         .logo img {
-            height: 60px;
-            transition: transform 0.5s ease;
+            height: 50px;
+            transition: transform 0.4s ease;
         }
 
         .logo img:hover {
-            transform: rotate(360deg) scale(1.1);
+            transform: scale(1.1);
         }
 
         .logo span {
-            font-size: 36px;
-            font-family: 'Playfair Display', serif;
-            color: #d4af37;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            font-size: 28px;
+            font-weight: 600;
+            color: #e6c34c;
+            letter-spacing: 1px;
         }
 
         .auth-section {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .auth-section p {
             margin: 0;
-            font-size: 18px;
-            color: #d4af37;
-            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: #e6c34c;
+            font-weight: 400;
         }
 
         .auth-section a {
             text-decoration: none;
             color: #fff;
-            background: linear-gradient(45deg, #d4af37, #b8972e);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
+            background: #e6c34c;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-            animation: pulse 2s infinite;
         }
 
         .auth-section a:hover {
             background: #fff;
-            color: #000;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            color: #121212;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(230, 195, 76, 0.4);
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
-            100% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-        }
-
-        /* Main Section */
-        .main-section {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 80px 40px;
+        /* Hero Section */
+        .hero-section {
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
+            padding: 0 20px;
+            animation: fadeIn 1.2s ease forwards;
         }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .hero-section h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #e6c34c;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .main-section h1 {
-            font-size: 56px;
-            font-family: 'Playfair Display', serif;
-            color: #d4af37;
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .main-section p {
-            font-size: 20px;
+        .hero-section p {
+            font-size: 18px;
             color: #ddd;
-            margin-bottom: 40px;
+            max-width: 600px;
+            margin-bottom: 30px;
             line-height: 1.6;
         }
 
-        /* Zusammenfassung Sektion */
+        .hero-section .cta-button {
+            text-decoration: none;
+            background: #e6c34c;
+            color: #121212;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .hero-section .cta-button:hover {
+            background: #fff;
+            color: #121212;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(230, 195, 76, 0.5);
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Summary Section */
         .summary-section {
-            max-width: 900px;
-            margin: 40px auto;
+            max-width: 1000px;
+            margin: 60px auto;
             padding: 40px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 15px;
-            border: 1px solid #d4af37;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
             text-align: center;
-            opacity: 0;
-            animation: fadeIn 1.5s ease forwards 0.5s;
+            animation: fadeIn 1.5s ease forwards 0.3s;
         }
 
         .summary-section h2 {
-            font-size: 36px;
-            font-family: 'Playfair Display', serif;
-            color: #d4af37;
+            font-size: 32px;
+            font-weight: 600;
+            color: #e6c34c;
             margin-bottom: 20px;
         }
 
         .summary-section p {
-            font-size: 18px;
+            font-size: 16px;
             color: #ccc;
-            line-height: 1.8;
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-            margin-top: 50px;
+        /* Features Section */
+        .features-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
         }
 
-        .action-buttons a {
-            text-decoration: none;
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(230, 195, 76, 0.3);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: #e6c34c;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 600;
             color: #fff;
-            background: linear-gradient(45deg, #d4af37, #b8972e);
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-            animation: pulse 2s infinite;
+            margin-bottom: 10px;
         }
 
-        .action-buttons a:hover {
-            background: #fff;
-            color: #000;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-
-        .action-buttons p {
-            font-size: 18px;
-            color: #d4af37;
-            margin: 0;
-            align-self: center;
+        .feature-card p {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
         }
 
         /* Footer */
         footer {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 25px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
             text-align: center;
-            color: #d4af37;
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            border-top: 1px solid #d4af37;
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+            color: #e6c34c;
+            font-size: 14px;
+            border-top: 1px solid #e6c34c;
         }
 
-        footer p {
-            margin: 0;
-        }
-
-        /* Responsivität */
+        /* Responsive Design */
         @media (max-width: 768px) {
             header {
+                padding: 15px 20px;
                 flex-direction: column;
-                gap: 20px;
-            }
-
-            .logo img {
-                height: 50px;
+                gap: 15px;
             }
 
             .logo span {
-                font-size: 28px;
+                font-size: 24px;
             }
 
-            .main-section {
-                padding: 60px 20px;
+            .hero-section h1 {
+                font-size: 36px;
             }
 
-            .main-section h1 {
-                font-size: 40px;
-            }
-
-            .main-section p {
-                font-size: 18px;
+            .hero-section p {
+                font-size: 16px;
             }
 
             .summary-section {
@@ -252,33 +256,32 @@
             .summary-section h2 {
                 font-size: 28px;
             }
-
-            .summary-section p {
-                font-size: 16px;
-            }
         }
 
         @media (max-width: 576px) {
-            .main-section h1 {
-                font-size: 32px;
+            .hero-section h1 {
+                font-size: 28px;
             }
 
-            .main-section p {
-                font-size: 16px;
+            .hero-section p {
+                font-size: 14px;
             }
 
-            .action-buttons {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .action-buttons a {
-                padding: 12px 25px;
-                font-size: 16px;
+            .hero-section .cta-button {
+                padding: 10px 25px;
+                font-size: 14px;
             }
 
             .summary-section h2 {
                 font-size: 24px;
+            }
+
+            .feature-card {
+                padding: 15px;
+            }
+
+            .feature-card h3 {
+                font-size: 18px;
             }
         }
     </style>
@@ -296,7 +299,6 @@
             <p>Willkommen, {{ user.username }}!</p>
             <a href="{% url 'logout_view' %}">Abmelden</a>
         {% else %}
-            <p>Du bist nicht angemeldet.</p>
             <a href="{% url 'login' %}">Anmelden</a>
             <a href="{% url 'register' %}">Registrieren</a>
         {% endif %}
@@ -304,31 +306,48 @@
     </div>
 </header>
 
-<!-- Main Section -->
-<div class="main-section">
-    <h1>Willkommen bei CineVerse</h1>
-</div>
+<!-- Hero Section -->
+<section class="hero-section">
+    <h1>Deine Welt des Kinos</h1>
+    <p>Entdecke die neuesten Filme, finde Kinos in deiner Nähe und gestalte dein persönliches Kinoerlebnis mit CineVerse.</p>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="cta-button">Jetzt starten</a>
+    {% else %}
+        <a href="{% url 'home' %}" class="cta-button">Zur Webseite</a>
+    {% endif %}
+</section>
 
-<!-- Zusammenfassung Sektion -->
-<div class="summary-section">
+<!-- Summary Section -->
+<section class="summary-section">
     <h2>Über CineVerse</h2>
     <p>
-        CineVerse ist Deine ultimative Plattform für Film- und Kinoerlebnisse. Entdecke die neuesten Filme, finde Kinos in Deiner Nähe und speichere Deine Favoriten. Mit unserem Kalender verpasst Du keinen Filmstart mehr, und Dein persönliches Profil ermöglicht es Dir, Deine Filmwelt individuell zu gestalten. Tauche ein in die Welt des Kinos – mit CineVerse!
+        CineVerse ist deine ultimative Plattform für Film- und Kinoerlebnisse. Speichere deine Lieblingsfilme, verpasse keinen Kinostart mit unserem Kalender und finde die besten Kinos in deiner Nähe. Dein persönliches Profil macht dein Kinoerlebnis einzigartig.
     </p>
-</div>
+</section>
 
-<!-- Action Buttons -->
-<div class="main-section">
-    <div class="action-buttons">
-        <a href="http://localhost:8000/admin">Adminseite</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'home' %}">Zur Webseite</a>
-        {% else %}
-            <p>Melde dich an, um auf die Webseite zu gelangen!</p>
-        {% endif %}
+<!-- Features Section -->
+<section class="features-section">
+    <div class="feature-card">
+        <i class="bi bi-film"></i>
+        <h3>Neue Filme</h3>
+        <p>Entdecke die neuesten Blockbuster und Indie-Filme direkt auf unserer Plattform.</p>
     </div>
-</div>
+    <div class="feature-card">
+        <i class="bi bi-geo-alt"></i>
+        <h3>Kinos in der Nähe</h3>
+        <p>Finde Kinos in deiner Umgebung und plane deinen nächsten Kinobesuch.</p>
+    </div>
+    <div class="feature-card">
+        <i class="bi bi-bookmark-heart"></i>
+        <h3>Deine Favoriten</h3>
+        <p>Speichere deine Lieblingsfilme und behalte sie immer im Blick.</p>
+    </div>
+</section>
 
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 CineVerse. Alle Rechte vorbehalten.</p>
+</footer>
 
 </body>
 </html>
