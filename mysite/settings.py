@@ -85,12 +85,21 @@ import dj_database_url
 
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=0,
-        ssl_require=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cineverse',
+        'USER': 'cineverse_user',
+        'PASSWORD': 'eqbiUIXsvZYAH69B5y0Dumc55jvccyUL',
+        'HOST': 'dpg-d04fpqi4d50c73a578pg-a.frankfurt-postgres.render.com',
+        'PORT': 5432,
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+        'CONN_MAX_AGE': 0,   # wichtig: immer neue Verbindung
+        'CONN_HEALTH_CHECKS': True,
+    }
 }
+
 
 
 
