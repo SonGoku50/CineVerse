@@ -83,13 +83,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 import dj_database_url
 
+
 DATABASES = {
     "default": dj_database_url.config(
-        default=f"postgres://cineverse_user:eqbiUIXsvZYAH69B5y0Dumc55jvccyUL@dpg-d04fpqi4d50c73a578pg-a.frankfurt-postgres.render.com:5432/cineverse",
+        default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
 }
+
 
 
 
