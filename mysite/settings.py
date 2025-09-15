@@ -86,7 +86,7 @@ import dj_database_url
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cineverse',
         'USER': 'cineverse_user',
         'PASSWORD': 'eqbiUIXsvZYAH69B5y0Dumc55jvccyUL',
@@ -94,6 +94,7 @@ DATABASES = {
         'PORT': 5432,
         'OPTIONS': {
             'sslmode': 'require',
+            'sslrootcert': '/etc/ssl/certs/ca-certificates.crt',
         },
         'CONN_MAX_AGE': 0,   # wichtig: immer neue Verbindung
         'CONN_HEALTH_CHECKS': True,
