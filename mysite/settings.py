@@ -38,14 +38,26 @@ MIDDLEWARE = [
 ROOT_URLCONF = "mysite.urls"
 WSGI_APPLICATION = "mysite.wsgi.application"
 
-# --- DATABASE ---
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=0,
-        ssl_require=True,
-    )
-}
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'cineverse_local',
+            'USER': 'postgres',
+            'PASSWORD': 'eqbiUIXsvZYAH69B5y0Dumc55jvccyUL',
+            'HOST': '127.0.0.1',
+            'PORT': 5432,
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+
 
 # --- PASSWORDS ---
 AUTH_PASSWORD_VALIDATORS = [
